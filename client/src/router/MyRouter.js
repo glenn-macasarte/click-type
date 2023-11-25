@@ -7,7 +7,8 @@ import Type from '../pages/Type/Type';
 function MyRouter() {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/home" element={<Home />} />
       <Route path="/type" element={<Type />} />
     </Routes>
