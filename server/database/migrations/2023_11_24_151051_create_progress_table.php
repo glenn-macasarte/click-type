@@ -12,16 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('progress', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->integer('role')->default(2);
-            $table->integer('gender')->nullable();
-            $table->date('birthdate')->nullable();
-            $table->integer('is_verified')->default(0);
+            $table->integer('user_id');
+            $table->integer('level_number');
+            $table->integer('assignment_number');
+            $table->integer('words_per_minute');
+            $table->float('accuracy');
+            $table->integer('is_done')->default(0);
+            $table->timestamp('date_done')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('progress');
     }
 };
