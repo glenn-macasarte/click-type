@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { generate } from "random-words";
-// import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
 const NUMB_OF_WORDS = 200;
-const SECONDS = 60;
+const SECONDS = 10;
 
 function Type() {
   const [words, setWords] = useState([]);
@@ -16,6 +17,7 @@ function Type() {
   const [incorrect, setIncorrect] = useState(0);
   const [status, setStatus] = useState("waiting");
   const textInput = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setWords(generateWords());
@@ -99,6 +101,52 @@ function Type() {
     }
   }
 
+  function save() {
+    const user = JSON.parse(localStorage.logged_user);
+    const date = new Date();
+
+    // format date
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+
+    const full_date = year + "-" + addZero(month) + "-" + addZero(day) + " " + addZero(hours) + ":" + addZero(minutes) + ":" + addZero(seconds);
+
+    const data = {
+      user_id: user.id,
+      level_number: 1,
+      assignment_number: 1,
+      words_per_minute: correct,
+      accuracy: Math.round((correct / (correct + incorrect)) * 100),
+      is_done: 1,
+      date_done: full_date,
+    }
+
+    axios.post('http://127.0.0.1:8000/api/save', data, { headers: { 
+        'Accept': 'application/json', 
+        Authorization: "Bearer " + localStorage.getItem('auth_token') 
+      } })
+      .then(res => {
+        navigate("/progress");
+      })
+      .catch(function (error) {
+        if (error.response.status === 422) {
+          alert(error.response.data.message);
+        }
+      });
+  }
+
+  function addZero(value) {
+    if (value < 10) {
+      return "0" + value;
+    } else {
+      return value;
+    }
+  }
+
   return (
     <div className="App">
       <div className="section">
@@ -153,9 +201,13 @@ function Type() {
                 </p>
             </div>
           </div>
+          <button className="button is-info is-fullwidth" onClick={save}>
+            Save Record
+          </button>
         </div>
       )}
     </div>
+    
   )
 }
 

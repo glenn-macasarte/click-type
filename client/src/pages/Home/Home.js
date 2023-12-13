@@ -1,47 +1,34 @@
 import { useState, useEffect, useRef } from "react";
-import { generate } from "random-words";
-// import { Link, useNavigate } from 'react-router-dom';
-
-const NUMB_OF_WORDS = 200;
-const SECONDS = 60;
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Home() {
-  const [words, setWords] = useState([]);
-  const [countDown, setCountDown] = useState(SECONDS);
-  const [currInput, setCurrInput] = useState("");
-  const [currWordIndex, setCurrWordIndex] = useState(0);
-  const [currCharIndex, setCurrCharIndex] = useState(-1);
-  const [currChar, setCurrChar] = useState("");
-  const [correct, setCorrect] = useState(0);
-  const [incorrect, setIncorrect] = useState(0);
-  const [status, setStatus] = useState("waiting");
-  const textInput = useRef(null);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    setWords(generateWords());
-  }, []);
-
-  useEffect(() => {
-    if (status === "started") {
-      textInput.current.focus();
-    }
-  }, [status]);
-
-  function generateWords() {
-    return new Array(NUMB_OF_WORDS).fill(null).map(() => generate());
-  }
-
-  function login() {
-    console.log('ahaha')
+  const logout = () => {
+    axios.post('http://127.0.0.1:8000/api/logout', {}, { 
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem('auth_token')
+      } })
+      .then(res => {
+        localStorage.clear();
+        navigate("/login");
+      })
+      .catch(function (error) {
+        if (error.response.status === 422) {
+          alert(error.response.data.message);
+        }
+      });
   }
 
   return (
     <div className="App">
       <div className="section">
         <div className="is-size-1 has-text-centered has-text-primary">
-          <h1>Home Page</h1>
-          <button>Start Here</button>
-          <button>Progress</button>
+          <h1><b>Home Page</b></h1>
+          <div><Link to="/type">Start Here</Link></div>
+          <div><Link to="/progress">Progress</Link></div>
+          <div><button onClick={logout}>Logout</button></div>
         </div>
       </div>
     </div>
