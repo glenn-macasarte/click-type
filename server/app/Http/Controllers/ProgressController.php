@@ -24,7 +24,14 @@ class ProgressController extends Controller
         'date_done'         => $request->date_done,
       ];
 
-      $progress = Progress::create($data);
+      // $progress = Progress::create($data);
+      $progress = Progress::updateOrCreate([
+          'user_id' => $data['user_id'],
+          'level_number' => $data['level_number'], 
+          'assignment_number' => $data['assignment_number']
+        ],
+        $data
+      );
       DB::commit();
 
       return response()->json([
@@ -39,5 +46,14 @@ class ProgressController extends Controller
         'progress' => $e->getMessage(),
       ], 422);
     }
+  }
+
+  public function getprogress($id)
+  {
+    $progress = Progress::where('user_id', $id)->get();
+    return response()->json([
+      'message' => 'Successfully retrieved progress.',
+      'progress' => $progress,
+    ], 200);
   }
 }

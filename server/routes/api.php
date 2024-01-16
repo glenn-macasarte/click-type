@@ -22,4 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::get('/getprogress/{id}', [ProgressController::class, 'getprogress'])->middleware('auth:sanctum');
 Route::post('/save', [ProgressController::class, 'save'])->middleware('auth:sanctum');

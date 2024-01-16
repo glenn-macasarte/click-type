@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { generate } from "random-words";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
+import * as myConstants from "../../constants";
 
-const NUMB_OF_WORDS = 200;
+const NUMB_OF_WORDS = 100;
 const SECONDS = 10;
 
 function Type() {
@@ -16,12 +17,14 @@ function Type() {
   const [correct, setCorrect] = useState(0);
   const [incorrect, setIncorrect] = useState(0);
   const [status, setStatus] = useState("waiting");
+  const [level, setLevel] = useState("0");
+  const [assignment, setAssignment] = useState("0");
   const textInput = useRef(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setWords(generateWords());
-  }, []);
+  // useEffect(() => {
+  //   setWords(generateWords());
+  // }, []);
 
   useEffect(() => {
     if (status === "started") {
@@ -33,7 +36,11 @@ function Type() {
     return new Array(NUMB_OF_WORDS).fill(null).map(() => generate());
   }
 
-  function start() {
+  function start($e) {
+    const level_assignment = $e.target.value.split("_");
+    setLevel(level_assignment[0]);
+    setAssignment(level_assignment[1]);
+
     if (status === "finished") {
       setWords(generateWords());
       setCurrWordIndex(0);
@@ -44,6 +51,44 @@ function Type() {
     }
 
     if (status !== "started") {
+      if (level_assignment[0] === "1") {
+        const min = 1;
+        const max = 5;
+        var level_one = myConstants.level_one;
+
+        let result = [];
+        for (let i = 0; i < NUMB_OF_WORDS; i++) {
+          let random_word_length = Math.floor(Math.random() * (max - min + 1) + min);
+          const characters = level_one[level_assignment[1] - 1];
+          let counter = 0;
+          while (counter < random_word_length) {
+            if (result[i] === undefined) {
+              result[i] = '';
+            }
+            result[i] += characters[Math.floor(Math.random() * ((characters.length - 1) - 0 + 1) + 0)];
+            counter += 1;
+          }
+        }
+        setWords(result);
+      } else if (level_assignment[0] === "2") {
+        var level_two = myConstants.level_two[level_assignment[1] - 1];
+        let currentIndex = level_two.length, randomIndex;
+
+        // While there remain elements to shuffle.
+        while (currentIndex > 0) {
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+
+          // And swap it with the current element.
+          [level_two[currentIndex], level_two[randomIndex]] = [
+            level_two[randomIndex], level_two[currentIndex]];
+        }
+        setWords(level_two);
+      } else {
+        setWords(generateWords());
+      }
+
       setStatus("started");
       let interval = setInterval(() => {
         setCountDown((prevCountdown) => {
@@ -117,8 +162,8 @@ function Type() {
 
     const data = {
       user_id: user.id,
-      level_number: 1,
-      assignment_number: 1,
+      level_number: level,
+      assignment_number: assignment,
       words_per_minute: correct,
       accuracy: Math.round((correct / (correct + incorrect)) * 100),
       is_done: 1,
@@ -151,6 +196,32 @@ function Type() {
     <div className="App">
       <div className="section">
         <div className="is-size-1 has-text-centered has-text-primary">
+          <h2>Select Difficulty</h2>
+          <h3>Novice</h3>
+          <button className="button is-info is-fullwidth" onClick={start} value="1_1">Level 1</button>
+          <button className="button is-info is-fullwidth" onClick={start} value="1_2">Level 2</button>
+          <button className="button is-info is-fullwidth" onClick={start} value="1_3">Level 3</button>
+          <button className="button is-info is-fullwidth" onClick={start} value="1_4">Level 4</button>
+          <button className="button is-info is-fullwidth" onClick={start} value="1_5">Level 5</button>
+
+          <h3>Intermediate</h3>
+          <button className="button is-info is-fullwidth" onClick={start} value="2_1">Level 1</button>
+          <button className="button is-info is-fullwidth" onClick={start} value="2_2">Level 2</button>
+          <button className="button is-info is-fullwidth" onClick={start} value="2_3">Level 3</button>
+          <button className="button is-info is-fullwidth" onClick={start} value="2_4">Level 4</button>
+          <button className="button is-info is-fullwidth" onClick={start} value="2_5">Level 5</button>
+
+          <h3>Advance</h3>
+          <button className="button is-info is-fullwidth" onClick={start} value="3_1">Level 1</button>
+          <button className="button is-info is-fullwidth" onClick={start} value="3_2">Level 2</button>
+          <button className="button is-info is-fullwidth" onClick={start} value="3_3">Level 3</button>
+          <button className="button is-info is-fullwidth" onClick={start} value="3_4">Level 4</button>
+          <button className="button is-info is-fullwidth" onClick={start} value="3_5">Level 5</button>
+        </div>
+      </div>
+
+      <div className="section">
+        <div className="is-size-1 has-text-centered has-text-primary">
           <h2>{countDown}</h2>
         </div>
       </div>
@@ -158,11 +229,11 @@ function Type() {
         <input ref={textInput} disabled={status !== "started"} type="text" className="input" onKeyDown={handleKeyDown} value={currInput} onChange={(e) => setCurrInput(e.target.value)} />
       </div>
 
-      <div className="section">
+      {/* <div className="section">
         <button className="button is-info is-fullwidth" onClick={start}>
           Start
         </button>
-      </div>
+      </div> */}
 
       {status === "started" && (
         <div className="section">
@@ -206,6 +277,12 @@ function Type() {
           </button>
         </div>
       )}
+
+      <div className="section">
+        <div className="is-size-1 has-text-centered has-text-primary">
+          <Link to="/">Back</Link>
+        </div>
+      </div>
     </div>
     
   )

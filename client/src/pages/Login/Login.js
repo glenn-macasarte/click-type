@@ -31,6 +31,7 @@ function Login() {
       <div className="section">
         <div className="is-size-1 has-text-centered has-text-primary">
           <form onSubmit={login}>
+            <h1><b>Login Page</b></h1>
             <input type="text" name="email" placeholder="Email" required />
             <input type="password" name="password" placeholder="Password" required />
             <button className="button is-info is-fullwidth">Login</button>

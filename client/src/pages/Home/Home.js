@@ -4,6 +4,7 @@ import axios from "axios";
 
 function Home() {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('logged_user'));
 
   const logout = () => {
     axios.post('http://127.0.0.1:8000/api/logout', {}, { 
@@ -26,6 +27,7 @@ function Home() {
       <div className="section">
         <div className="is-size-1 has-text-centered has-text-primary">
           <h1><b>Home Page</b></h1>
+          <span>Welcome {user.first_name} {user.last_name}</span>
           <div><Link to="/type">Start Here</Link></div>
           <div><Link to="/progress">Progress</Link></div>
           <div><button onClick={logout}>Logout</button></div>
