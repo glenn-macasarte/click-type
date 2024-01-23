@@ -48,12 +48,54 @@ class ProgressController extends Controller
     }
   }
 
-  public function getprogress($id)
+  public function getprogress()
   {
-    $progress = Progress::where('user_id', $id)->get();
-    return response()->json([
-      'message' => 'Successfully retrieved progress.',
-      'progress' => $progress,
-    ], 200);
+    $progress = Progress::where('user_id', auth()->user()->id)->get();
+    $response = [];
+
+    if ($progress) {
+      $levels  = [1 => 'Beginner', 2 => 'Intermediate', 3 => 'Advanced'];
+      $assignments  = [
+        1 => ['J, F, and Spaces', 'U, R, and K Keys', 'D, E, and I Keys', 'C, G, and N Keys', 'Beginner Review'], 
+        2 => ['A Words', 'S Words', 'L Words', 'B Words', 'W Words'], 
+        3 => ['Level 3 - Assignment 1', 'Level 3 - Assignment 2', 'Level 3 - Assignment 3', 'Level 3 - Assignment 4', 'Level 3 - Assignment 5']
+      ];
+
+      foreach ($progress as $value) {
+        $response[$value->id] = [
+          'id'                => $value->id,
+          'level'             => $value->level_number,
+          'level_label'       => $levels[$value->level_number],
+          'assignment'        => $value->assignment_number,
+          'assignment_label'  => $assignments[$value->level_number][$value->assignment_number - 1],
+          'words_per_minute'  => $value->words_per_minute,
+          'accuracy'          => $value->accuracy,
+          'date'              => date("F j, Y g:i A", strtotime($value->date_done))
+        ];
+
+        if ($value->accuracy >= 80 && $value->accuracy <= 100) {
+          $efficiecy = 5;
+        } else if ($value->accuracy >= 60 && $value->accuracy <= 79) {
+          $efficiecy = 4;
+        } else if ($value->accuracy >= 40 && $value->accuracy <= 59) {
+          $efficiecy = 3;
+        } else if ($value->accuracy >= 20 && $value->accuracy <= 39) {
+          $efficiecy = 2;
+        } else if ($value->accuracy >= 0 && $value->accuracy <= 19) {
+          $efficiecy = 1;
+        }
+        $response[$value->id]['efficiency'] = $efficiecy;
+      }
+
+      return response()->json([
+        'message' => 'Successfully retrieved progress.',
+        'progress' => $response,
+      ], 200);
+    } else {
+      return response()->json([
+        'message' => 'You have no records yet.',
+        'progress' => $response,
+      ], 200);
+    }
   }
 }

@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+// import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import './Login.css';
 
 function Login() {
   const navigate = useNavigate();
@@ -28,16 +29,40 @@ function Login() {
 
   return (
     <div className="App">
-      <div className="section">
-        <div className="is-size-1 has-text-centered has-text-primary">
-          <form onSubmit={login}>
-            <h1><b>Login Page</b></h1>
-            <input type="text" name="email" placeholder="Email" required />
-            <input type="password" name="password" placeholder="Password" required />
-            <button className="button is-info is-fullwidth">Login</button>
-          </form>
+      <section className="hero is-success is-fullheight">
+        <div className="hero-body">
+          <div className="container has-text-centered">
+            <div className="column is-4 is-offset-4">
+              <h3 className="title has-text-black">ClickType</h3>
+              <hr className="login-hr" />
+              <p className="subtitle has-text-black">Please login to proceed.</p>
+              <div className="box">
+                <form onSubmit={login}>
+                  <div className="field">
+                    <div className="control">
+                      <input className="input is-large" type="email" name="email" placeholder="Email" autoFocus="" required />
+                    </div>
+                  </div>
+
+                  <div className="field">
+                    <div className="control">
+                      <input className="input is-large" type="password" name="password" placeholder="Password" required />
+                    </div>
+                  </div>
+
+                  <div className="field"></div>
+                  <button className="button is-block is-info is-large is-fullwidth">Login <i className="fa fa-sign-in" aria-hidden="true"></i></button>
+                </form>
+              </div>
+              <p className="has-text-grey">
+                {/* <a href="../">Sign Up</a> &nbsp;·&nbsp; */}
+                <a href="../">Forgot Password</a>
+                {/* <a href="../">Need Help?</a> */}
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+    </section>
     </div>
   )
 }
