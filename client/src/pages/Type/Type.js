@@ -5,7 +5,7 @@ import axios from "axios";
 import * as myConstants from "../../constants";
 
 const NUMB_OF_WORDS = 100;
-const SECONDS = 60;
+const SECONDS = 10;
 
 function Type() {
   const [words, setWords] = useState([]);
@@ -240,6 +240,17 @@ function Type() {
       });
   }
 
+  const getDiff = () => {
+    var level_label = ['Beginner', 'Intermediate', 'Advanced'];
+    var assignment_label = [
+      ['J, F, and Spaces', 'U, R, and K Keys', 'D, E, and I Keys', 'C, G, and N Keys', 'Beginner Review'],
+      ['A Words', 'S Words', 'L Words', 'B Words', 'W Words'],
+      ['Level 3 - Assignment 1', 'Level 3 - Assignment 2', 'Level 3 - Assignment 3', 'Level 3 - Assignment 4', 'Level 3 - Assignment 5']
+    ]
+    // console.log(assignment_label[level - 1][assignment - 1]);
+    return level_label[level - 1] + ": " + assignment_label[level - 1][assignment - 1];
+  }
+
   return (
     <div className="App">
       <nav className="navbar is-info">
@@ -264,7 +275,7 @@ function Type() {
           <div className="navbar-end">
             <div className="navbar-item">
               <div className="navbar-item has-dropdown is-hoverable">
-                <a className="navbar-link" href="/documentation/overview/start/">{user.first_name} {user.last_name}</a>
+                <a className="navbar-link" href="#">{user.first_name} {user.last_name}</a>
                 <div className="navbar-dropdown is-boxed">
                   <a className="navbar-item" href="#" onClick={logout}>Logout</a>
                 </div>
@@ -371,23 +382,31 @@ function Type() {
 
       {status === "finished" && (
         <div className="container">
-          <div className="section">
-            <div className="columns">
-              <div className="column has-text-centered">
-                <p className="is-size-5">Words per minute:</p>
-                <p className="has-text-primary is-size-1">
-                  {correct}
-                </p>
+          <div className="box">
+            <div className="section">
+                <div className="columns">
+                  <div className="column has-text-centered">
+                    <p className="is-size-5">DIFFICULTY</p>
+                    <p className="has-text-danger is-size-1">
+                      {getDiff()}
+                    </p>
+                  </div>
+                  <div className="column has-text-centered">
+                    <p className="is-size-5">WORDS PER MINUTE</p>
+                    <p className="has-text-primary is-size-1">
+                      {correct} WPM
+                    </p>
+                  </div>
+                  <div className="column has-text-centered">
+                    <p className="is-size-5">ACCURACY</p>
+                    <p className="has-text-info is-size-1">
+                      {isNaN(Math.round((correct / (correct + incorrect)) * 100)) ? 0 : Math.round((correct / (correct + incorrect)) * 100) } %
+                    </p>
+                  </div>
+                </div>
+                <button className="button is-primary is-large is-fullwidth" onClick={save}>Save Record</button>
               </div>
-              <div className="column has-text-centered">
-                <div className="is-size-5">Accuracy: </div>
-                  <p className="has-text-info is-size-1">
-                    {isNaN(Math.round((correct / (correct + incorrect)) * 100)) ? 0 : Math.round((correct / (correct + incorrect)) * 100) } %
-                  </p>
-              </div>
-            </div>
-            <button className="button is-primary is-large is-fullwidth" onClick={save}>Save Record</button>
-          </div>
+          </div><br/>
         </div>
       )}
     </div>

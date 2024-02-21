@@ -110,7 +110,7 @@ function Progress() {
                       <tr key={i}>
                         <th>{progress[prog]['level_label']}</th>
                         <td>
-                          {progress[prog]['assignment_label']}
+                        {progress[prog]['assignment']}. {progress[prog]['assignment_label']}
                           <progress className={"progress is-large " + getProgressClass(progress[prog]['level'])} value={progress[prog]['accuracy']} max="100">90%</progress>
                         </td>
                         <td>{progress[prog]['words_per_minute']} WPM</td>
