@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { generate } from "random-words";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import * as myConstants from "../../constants";
+import './Type.css';
+import Navbar from '../../components/Navbar';
 
 const NUMB_OF_WORDS = 100;
 const SECONDS = 10;
@@ -21,7 +23,6 @@ function Type() {
   const [assignment, setAssignment] = useState("0");
   const textInput = useRef(null);
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('logged_user'));
 
   useEffect(() => {
     if (status === "started") {
@@ -84,7 +85,7 @@ function Type() {
 
     if (status !== "started") {
       if (level_assignment[0] === "1") {
-        const min = 1;
+        const min = 2;
         const max = 5;
         var level_one = myConstants.level_one;
 
@@ -118,7 +119,28 @@ function Type() {
         }
         setWords(level_two);
       } else {
-        setWords(generateWords());
+        if (level_assignment[1] === "1" || level_assignment[1] === "2") {
+          const min = 2;
+          const max = 5;
+          var level_three = myConstants.level_three;
+
+          let result = [];
+          for (let i = 0; i < NUMB_OF_WORDS; i++) {
+            let random_word_length = Math.floor(Math.random() * (max - min + 1) + min);
+            const characters = level_three[level_assignment[1] - 1];
+            let counter = 0;
+            while (counter < random_word_length) {
+              if (result[i] === undefined) {
+                result[i] = '';
+              }
+              result[i] += characters[Math.floor(Math.random() * ((characters.length - 1) - 0 + 1) + 0)];
+              counter += 1;
+            }
+          }
+          setWords(result);
+        } else {
+          setWords(generateWords());
+        }
       }
 
       setStatus("started");
@@ -146,7 +168,9 @@ function Type() {
       setCurrCharIndex(-1);
     // backspace
     } else if (keyCode === 8) {
-      setCurrCharIndex(currCharIndex - 1);
+      if (currCharIndex >= 0) {
+        setCurrCharIndex(currCharIndex - 1);
+      }
       setCurrChar("");
     } else {
       setCurrCharIndex(currCharIndex + 1);
@@ -173,6 +197,14 @@ function Type() {
       }
     } else if (wordIdx === currWordIndex && currCharIndex >= words[currWordIndex.length]) {
       return 'has-background-danger';
+    } else {
+      return "";
+    }
+  }
+
+  function getWordClass(wordIdx, charIdx, char) {
+    if (wordIdx === currWordIndex && status !== "finished") {
+      return 'word-underline';
     } else {
       return "";
     }
@@ -222,22 +254,6 @@ function Type() {
     } else {
       return value;
     }
-  }  
-
-  const logout = () => {
-    axios.post('http://127.0.0.1:8000/api/logout', {}, { 
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem('auth_token')
-      } })
-      .then(res => {
-        localStorage.clear();
-        navigate("/login");
-      })
-      .catch(function (error) {
-        if (error.response.status === 422) {
-          alert(error.response.data.message);
-        }
-      });
   }
 
   const getDiff = () => {
@@ -245,45 +261,14 @@ function Type() {
     var assignment_label = [
       ['J, F, and Spaces', 'U, R, and K Keys', 'D, E, and I Keys', 'C, G, and N Keys', 'Beginner Review'],
       ['A Words', 'S Words', 'L Words', 'B Words', 'W Words'],
-      ['Level 3 - Assignment 1', 'Level 3 - Assignment 2', 'Level 3 - Assignment 3', 'Level 3 - Assignment 4', 'Level 3 - Assignment 5']
+      ['10 Key Functions (Numbers Only)', '10 Key Functions (Numbers and Symbols)', 'All Random Words']
     ]
-    // console.log(assignment_label[level - 1][assignment - 1]);
     return level_label[level - 1] + ": " + assignment_label[level - 1][assignment - 1];
   }
 
   return (
     <div className="App">
-      <nav className="navbar is-info">
-        <div className="navbar-brand">
-          <a className="navbar-item" href="/">
-            <img src="https://bulma.io/images/bulma-logo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28" />
-          </a>
-          <div className="navbar-burger burger" data-target="navbarExampleTransparentExample">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
-
-        <div id="navbarExampleTransparentExample" className="navbar-menu">
-          <div className="navbar-start is-link">
-            <a className="navbar-item" href="/">Home</a>
-            <a className="navbar-item" href="/type">Typing Test</a>
-            <a className="navbar-item" href="/progress">Progress</a>
-          </div>
-
-          <div className="navbar-end">
-            <div className="navbar-item">
-              <div className="navbar-item has-dropdown is-hoverable">
-                <a className="navbar-link" href="#">{user.first_name} {user.last_name}</a>
-                <div className="navbar-dropdown is-boxed">
-                  <a className="navbar-item" href="#" onClick={logout}>Logout</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       <section className="hero is-info">
         <div className="hero-body">
@@ -295,29 +280,35 @@ function Type() {
 
         <div className="tabs is-boxed is-centered main-menu is-active" id="nav">
           <ul>
-            <li data-target="pane-1" id="1" className="">
+            <li data-target="pane-1" id="1" className="is-active">
               <a>
                 <span className="icon is-small"><i className="fas fa-baby-carriage"></i></span>
-                <span>Beginner</span>
+                <span className="font20">Beginner</span>
               </a>
             </li>
             <li data-target="pane-2" id="2">
               <a>
                 <span className="icon is-small"><i className="fas fa-bicycle"></i></span>
-                <span>Intermediate</span>
+                <span className="font20">Intermediate</span>
               </a>
             </li>
             <li data-target="pane-3" id="3">
               <a>
                 <span className="icon is-small"><i className="fas fa-motorcycle"></i></span>
-                <span>Advanced</span>
+                <span className="font20">Advanced</span>
+              </a>
+            </li>
+            <li data-target="pane-4" id="4">
+              <a>
+                <span className="icon is-small"><i className="fas fa-book"></i></span>
+                <span className="font20">Digital Literacy</span>
               </a>
             </li>
           </ul>
         </div>
 
         <div className="tab-content">
-          <div className="container tab-pane buttons are-large" id="pane-1">
+          <div className="container tab-pane buttons are-large display-block" id="pane-1">
             <button className="button is-info is-fullwidth is-light" onClick={start} value="1_1">J, F, and Spaces</button>
             <button className="button is-info is-fullwidth is-light" onClick={start} value="1_2">U, R, and K Keys</button>
             <button className="button is-info is-fullwidth is-light" onClick={start} value="1_3">D, E, and I Keys</button>
@@ -334,11 +325,19 @@ function Type() {
           </div>
 
           <div className="container tab-pane buttons are-large" id="pane-3">
-            <button className="button is-info is-fullwidth is-light" onClick={start} value="3_1">Level 3 - Assignment 1</button>
-            <button className="button is-info is-fullwidth is-light" onClick={start} value="3_2">Level 3 - Assignment 2</button>
-            <button className="button is-info is-fullwidth is-light" onClick={start} value="3_3">Level 3 - Assignment 3</button>
-            <button className="button is-info is-fullwidth is-light" onClick={start} value="3_4">Level 3 - Assignment 4</button>
-            <button className="button is-info is-fullwidth is-light" onClick={start} value="3_5">Level 3 - Assignment 5</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="3_1">10 Key Functions (Numbers Only)</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="3_2">10 Key Functions (Numbers and Symbols)</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="3_3">All Random Words</button>
+            {/* <button className="button is-info is-fullwidth is-light" onClick={start} value="3_4">Level 3 - Assignment 4</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="3_5">Level 3 - Assignment 5</button> */}
+          </div>
+
+          <div className="container tab-pane buttons are-large" id="pane-4">
+            <div className="container textCenter">
+              <iframe width="800" height="470" src="https://www.youtube.com/embed/vXsutlz0GIQ?si=sdhcSbgsQp4WjcfQ" title="YouTube video player" 
+                frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen>
+              </iframe>
+            </div>
           </div>
         </div>
       </section>
@@ -362,10 +361,10 @@ function Type() {
           <div className="section">
             <div className="card">
               <div className="card-content">
-                <div className="content">
+                <div className="content lh-70">
                   {words.map((word, i) => (
                     <span key={i}>
-                      <span>
+                      <span className={getWordClass(i)}>
                         {word.split("").map((char, idx) => (
                           <span className={getCharClass(i, idx, char)} key={idx}>{char}</span>
                         ))}

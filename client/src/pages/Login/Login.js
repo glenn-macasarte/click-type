@@ -18,7 +18,7 @@ function Login() {
       .then(res => {
         localStorage.setItem('logged_user', JSON.stringify(res.data.user));
         localStorage.setItem('auth_token', res.data.token);
-        navigate("/");
+        navigate("/type");
       })
       .catch(function (error) {
         if (error.response.status === 422) {

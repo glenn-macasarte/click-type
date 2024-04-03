@@ -50,7 +50,7 @@ class ProgressController extends Controller
 
   public function getprogress()
   {
-    $progress = Progress::where('user_id', auth()->user()->id)->get();
+    $progress = Progress::where('user_id', auth()->user()->id)->orderBy('date_done', 'DESC')->get();
     $response = [];
 
     if ($progress) {
@@ -58,11 +58,11 @@ class ProgressController extends Controller
       $assignments  = [
         1 => ['J, F, and Spaces', 'U, R, and K Keys', 'D, E, and I Keys', 'C, G, and N Keys', 'Beginner Review'], 
         2 => ['A Words', 'S Words', 'L Words', 'B Words', 'W Words'], 
-        3 => ['Level 3 - Assignment 1', 'Level 3 - Assignment 2', 'Level 3 - Assignment 3', 'Level 3 - Assignment 4', 'Level 3 - Assignment 5']
+        3 => ['10 Key Functions (Numbers Only)', '10 Key Functions (Numbers and Symbols)', 'All Random Words']
       ];
 
-      foreach ($progress as $value) {
-        $response[$value->id] = [
+      foreach ($progress as $key => $value) {
+        $response[$key] = [
           'id'                => $value->id,
           'level'             => $value->level_number,
           'level_label'       => $levels[$value->level_number],
@@ -84,7 +84,7 @@ class ProgressController extends Controller
         } else if ($value->accuracy >= 0 && $value->accuracy <= 19) {
           $efficiecy = 1;
         }
-        $response[$value->id]['efficiency'] = $efficiecy;
+        $response[$key]['efficiency'] = $efficiecy;
       }
 
       return response()->json([
