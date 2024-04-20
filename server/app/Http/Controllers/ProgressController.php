@@ -56,8 +56,8 @@ class ProgressController extends Controller
     if ($progress) {
       $levels  = [1 => 'Beginner', 2 => 'Intermediate', 3 => 'Advanced'];
       $assignments  = [
-        1 => ['J, F, and Spaces', 'U, R, and K Keys', 'D, E, and I Keys', 'C, G, and N Keys', 'Beginner Review'], 
-        2 => ['A Words', 'S Words', 'L Words', 'B Words', 'W Words'], 
+        1 => ['Introducing asdf', 'Introducing jkl;', 'Introducing ei', 'Introducing gh', 'Introducing ru', 'Introducing ty', 'Introducing qwop', 'Introducing vbmn', 'Introducing zxc', 'Introducing .,'],
+        2 => ['A Words', 'S Words', 'L Words', 'B Words', 'W Words'],
         3 => ['10 Key Functions (Numbers Only)', '10 Key Functions (Numbers and Symbols)', 'All Random Words']
       ];
 
