@@ -14,7 +14,7 @@ function Login() {
       password: e.target.password.value
     }
 
-    axios.post('http://127.0.0.1:8000/api/login', data, { headers: { 'Accept': 'application/json' } })
+    axios.post('https://clicktype.co/public/api/login', data, { headers: { 'Accept': 'application/json' } })
       .then(res => {
         localStorage.setItem('logged_user', JSON.stringify(res.data.user));
         localStorage.setItem('auth_token', res.data.token);

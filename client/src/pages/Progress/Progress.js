@@ -6,7 +6,7 @@ function Progress() {
   const [progress, setProgress] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/progress/', { headers: { 
+    axios.get('https://clicktype.co/public/api/progress/', { headers: { 
         'Accept': 'application/json',
         Authorization: "Bearer " + localStorage.getItem('auth_token')
       } })

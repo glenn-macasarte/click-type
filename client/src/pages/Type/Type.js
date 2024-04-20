@@ -234,7 +234,7 @@ function Type() {
       date_done: full_date,
     }
 
-    axios.post('http://127.0.0.1:8000/api/save', data, { headers: { 
+    axios.post('https://clicktype.co/public/api/save', data, { headers: { 
         'Accept': 'application/json', 
         Authorization: "Bearer " + localStorage.getItem('auth_token') 
       } })
