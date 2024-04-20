@@ -7,7 +7,7 @@ import './Type.css';
 import Navbar from '../../components/Navbar';
 
 const NUMB_OF_WORDS = 100;
-const SECONDS = 10;
+const SECONDS = 60;
 
 function Type() {
   const [words, setWords] = useState([]);
@@ -21,6 +21,7 @@ function Type() {
   const [status, setStatus] = useState("waiting");
   const [level, setLevel] = useState("0");
   const [assignment, setAssignment] = useState("0");
+  const [timeStarted, setTimeStarted] = useState(0);
   const textInput = useRef(null);
   const navigate = useNavigate();
 
@@ -144,12 +145,34 @@ function Type() {
       }
 
       setStatus("started");
+      // if (timeStarted === 1) {
+      //   let interval = setInterval(() => {
+      //     setCountDown((prevCountdown) => {
+      //       if (prevCountdown === 0) {
+      //           clearInterval(interval);
+      //           setStatus("finished");
+      //           setCurrInput("");
+      //           setTimeStarted(0);
+      //           return SECONDS;
+      //       } else {
+      //           return prevCountdown - 1;
+      //       }
+      //     });
+      //   }, 1000);
+      // }
+    }
+  }
+
+  function handleKeyDown({keyCode, key}) {
+    if (status === "started" && timeStarted === 0) {
+      setTimeStarted(1);
       let interval = setInterval(() => {
         setCountDown((prevCountdown) => {
           if (prevCountdown === 0) {
               clearInterval(interval);
               setStatus("finished");
               setCurrInput("");
+              setTimeStarted(0);
               return SECONDS;
           } else {
               return prevCountdown - 1;
@@ -157,9 +180,7 @@ function Type() {
         });
       }, 1000);
     }
-  }
 
-  function handleKeyDown({keyCode, key}) {
     // space bar
     if (keyCode === 32) {
       checkMatch();
@@ -259,7 +280,7 @@ function Type() {
   const getDiff = () => {
     var level_label = ['Beginner', 'Intermediate', 'Advanced'];
     var assignment_label = [
-      ['J, F, and Spaces', 'U, R, and K Keys', 'D, E, and I Keys', 'C, G, and N Keys', 'Beginner Review'],
+      ['Introducing asdf', 'Introducing jkl;', 'Introducing ei', 'Introducing gh', 'Introducing ru', 'Introducing ty', 'Introducing qwop', 'Introducing vbmn', 'Introducing zxc', 'Introducing .,'],
       ['A Words', 'S Words', 'L Words', 'B Words', 'W Words'],
       ['10 Key Functions (Numbers Only)', '10 Key Functions (Numbers and Symbols)', 'All Random Words']
     ]
@@ -309,11 +330,16 @@ function Type() {
 
         <div className="tab-content">
           <div className="container tab-pane buttons are-large display-block" id="pane-1">
-            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_1">J, F, and Spaces</button>
-            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_2">U, R, and K Keys</button>
-            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_3">D, E, and I Keys</button>
-            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_4">C, G, and N Keys</button>
-            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_5">Beginner Review</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_1">Introducing asdf</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_2">Introducing jkl;</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_3">Introducing ei</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_4">Introducing gh</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_5">Introducing ru</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_6">Introducing ty</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_7">Introducing qwop</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_8">Introducing vbmn</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_9">Introducing zxc</button>
+            <button className="button is-info is-fullwidth is-light" onClick={start} value="1_10">Introducing .,</button>
           </div>
 
           <div className="container tab-pane buttons are-large" id="pane-2">
